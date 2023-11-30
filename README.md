@@ -295,3 +295,8 @@ confusion matrix
   <source src="report/videos/gui_demo.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
+
+
+
+
+[![Watch the video](report/img/gui_demo.png)](report/videos/gui_demo.webm)
