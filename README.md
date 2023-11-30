@@ -292,6 +292,6 @@ confusion matrix
 
 
 <video width="640" height="360" controls>
-  <source src="report/videos/gui_demo.mp4" type="video/mp4">
+  <source src="report/videos/gui_demo.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
