@@ -1,0 +1,11 @@
+numpy==1.23.0
+scikit-learn
+Pillow
+tensorflow==2.13.1
+matplotlib
+seaborn
+tqdm
+pyqt5
+opencv-python-headless
+Tk
+interface
