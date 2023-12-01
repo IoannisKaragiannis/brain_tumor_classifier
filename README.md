@@ -15,6 +15,9 @@ chmod +x remove_env.sh
 source ~/python_venv/brain/bin/activate
 ```
 
+### Download dataset
+Download the dataset from [here](https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset) and extract them inside this repo under the name `brain_tumor_mri_dataset`.
+
 ### Data Exploration
 
 Perform data exploration 
@@ -27,15 +30,15 @@ The results will be stored under the `report/img` directory.
 
 Below you can see an example of some random training data:
 
-<img src="/home/ioannis/git_repos/brain_tumor_classifier/report/img/random_images.png" alt="image" style="zoom:72%;" />
+<img src="report/img/random_images.png" alt="image" style="zoom:72%;" />
 
 We can also observe that the training data are quite balanced 
 
-<img src="/home/ioannis/git_repos/brain_tumor_classifier/report/img/train_data_distribution.png" alt="image" style="zoom:72%;" />
+<img src="report/img/train_data_distribution.png" alt="image" style="zoom:72%;" />
 
 Below one can observe that the distribution of the four different classes, namely `glioma`, `meningioma`, `notumor`, and `pituitary` is balanced among the training, validation and test data.
 
-<img src="/home/ioannis/git_repos/brain_tumor_classifier/report/img/distribution_train_valid_test.png" alt="image" style="zoom:72%;" />
+<img src="report/img/distribution_train_valid_test.png" alt="image" style="zoom:72%;" />
 
 ### Data Augmentation
 
@@ -59,7 +62,7 @@ Below one can observe that the distribution of the four different classes, namel
    
    It will take a while. Next to the `train` and `test` folders, a new directory called `train_augmented` or `test_augmented`will be created accordingly. Only the training data or their augmented version will be used throughout the training process while the test data will be left untouched for evaluation purposes. An example of the different augmentation techniques applied on one particular glioma sample:
 
-<img src="/home/ioannis/git_repos/brain_tumor_classifier/report/img/aumgented_images.png" alt="image" style="zoom:72%;" />
+<img src="report/img/aumgented_images.png" alt="image" style="zoom:72%;" />
 
 7. 
 
@@ -283,6 +286,8 @@ weighted avg       0.98      0.98      0.98      7856
 confusion matrix
 
 <img src="report/img/VGG16_aug_conf_mat.png" alt="image" style="zoom:72%;" />
+
+VGG16 with the particular data augmentation seems to be promising even when we augment with slightly different way the test data. However, one should bear in mind that even the distribution of the test data of this particular MRI dataset taken from [Kaggle](https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset) is close enough to the distribution of the train data. One can observe this if one tries to diagnose an unseen image taken from the internet. My classifier, even the VGG16-based, one will most likely misclassify the unseen MRI. At this point I want to admit that due to lack of medical knowledge or expertise I am in no position to evaluate the quality of the training data themselves. 
 
 ### GUI
 
