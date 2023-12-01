@@ -48,7 +48,7 @@ Below one can observe that the distribution of the four different classes, namel
 
 3. Rename the subdirectories into `train` and `test` accordingly.
 
-4. The data have different dimensions. For convenience while performing data augmentation I also resize them to 512x512.
+4. The data have different dimensions. For convenience while performing data augmentation I also resize them to 256x256.
 
 5. To perform data augmentation do the following. You can add more augmentation techniques but be cautious when it comes to MRI dataset. If the distribution of the augmented dataset diverges significantly then the model will learn erroneously.
 

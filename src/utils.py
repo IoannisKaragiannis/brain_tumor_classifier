@@ -823,7 +823,7 @@ class Classifier:
         self.nb_classes = len(self.class_names)
 
     def compile(self):
-        print(f"[utils][Model]:: Creating model with name {self.name}")
+        print(f"[utils][Classifier]:: Creating model with name {self.name}")
 
         self.model = get_compiled_model(self.args)
 
@@ -839,7 +839,7 @@ class Classifier:
             model_path (str): absolute path of the saved model
         """
 
-        print(f"[Model]:: Loading {model_path}")
+        print(f"[Classifier]:: Loading {model_path}")
         self.path = model_path
         self.model = load_model(self.path)
         self.trained = True
@@ -853,22 +853,31 @@ class Classifier:
 
     def save(self, path, model_name):
         if not os.path.exists(path):
-            print("[utils][Model]:: results will be stored under: " + path)
+            print("[utils][Classifier]:: results will be stored under: " + path)
             os.makedirs(path)
     
         self.model.save(path + "/" + model_name)
         self.path = path + model_name
 
     def train(self, train_paths, train_labels):
+        """
+        Function that trains the model using the train data after splitting them in
+        train and valid.
+
+        Args:
+            train_paths: paths of training MRI images
+            train_labels: labels associated with each MRI image
+        """
+
         print('='*70)
-        print("[utils][Model]::Training of {} started ...".format(self.name))
+        print("[utils][Classifier]::Training of {} started ...".format(self.name))
         print('='*70)
 
         # If you find that the accuracy score remains at 10% after several epochs, 
         # try to re run the code. It’s probably because the initial random weights are just not good.
 
         if not os.path.exists(PLOTS_PATH):
-            print("[utils][MODEL]:: history will be stored under: " + PLOTS_PATH)
+            print("[utils][Classifier]:: history will be stored under: " + PLOTS_PATH)
             os.makedirs(PLOTS_PATH)
 
         # this is to avoid overfitting
@@ -924,13 +933,17 @@ class Classifier:
         np.save(HISTORY_PATH + self.args.model_name +".npy", self.history.history)
 
         print('='*40)
-        print('[utils][Model]::Elapsed time during training: {} sec'.format(round(time.time() - start_time, 3)))
+        print('[utils][Classifier]::Elapsed time during training: {} sec'.format(round(time.time() - start_time, 3)))
         print('='*40)
         self.trained = True
         return self.history
 
     # ground truth not necessary
     def make_single_prediction(self, image_path, true_label=None):
+        """
+        Function that makes a single prediction. It is used when we are utilizing
+        the developed GUI.
+        """
 
         # Preprocess the single image
         single_image = preprocess_single_image(image_path, (self.args.input_size, self.args.input_size))
@@ -954,12 +967,17 @@ class Classifier:
         return self.class_names[predicted_class_index[0]]
 
     # ground truth essential
-    def evaluate(self, test_paths, test_labels, show_details = False):
+    def evaluate(self, test_paths, test_labels):
+
+        """
+        Function that tests the classifier against the test data and returns
+        the classification report and a plot of the confusion matrix.
+        """
     
         start_time = time.time()
 
         print('='*50)
-        print("[utils][Model]::Evaluation of CNN started...")
+        print("[utils][Classifier]::Evaluation of CNN started...")
         print('='*50)
 
         steps = len(test_labels) // self.args.test_batch_size
