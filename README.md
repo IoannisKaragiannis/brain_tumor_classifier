@@ -64,9 +64,6 @@ Below one can observe that the distribution of the four different classes, namel
 
 <img src="report/img/aumgented_images.png" alt="image" style="zoom:72%;" />
 
-7. 
-
-
 
 ### Test a model
 
@@ -287,7 +284,9 @@ confusion matrix
 
 <img src="report/img/VGG16_aug_conf_mat.png" alt="image" style="zoom:72%;" />
 
-VGG16 with the particular data augmentation seems to be promising even when we augment with slightly different way the test data. However, one should bear in mind that even the distribution of the test data of this particular MRI dataset taken from [Kaggle](https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset) is close enough to the distribution of the train data. One can observe this if one tries to diagnose an unseen image taken from the internet. My classifier, even the VGG16-based, one will most likely misclassify the unseen MRI. At this point I want to admit that due to lack of medical knowledge or expertise I am in no position to evaluate the quality of the training data themselves. 
+#### Conclusion
+
+VGG16 with the particular data augmentation seems to be promising even when we augment with slightly different way the test data. However, one should bear in mind that even the distribution of the test data of this particular MRI dataset taken from [Kaggle](https://www.kaggle.com/datasets/masoudnickparvar/brain-tumor-mri-dataset) is close enough to the distribution of the train data. This does not seem to be the case for images taken from the internet. My classifier, even the VGG16-based one, will most likely misclassify the unseen MRI images fetched from the internet. At this point I want to admit that due to lack of medical knowledge or expertise I am in no position to evaluate the quality of the training data themselves. 
 
 ### GUI
 
