@@ -1,22 +1,8 @@
-# For Data Processing
-import numpy as np
-
-# For ML Models
-from tensorflow import keras
-from tensorflow.keras.layers import *
-from tensorflow.keras.losses import *
-from tensorflow.keras.models import *
-from tensorflow.keras.metrics import *
-from tensorflow.keras.optimizers import *
-from tensorflow.keras.applications import *
-
 # Miscellaneous
 import os
 from pathlib import Path
 import sys
-import cv2
 import time
-
 import utils
 
 FILE = Path(__file__).resolve()
@@ -47,28 +33,15 @@ def main():
     with open(ROOT + '/config.ini','r') as firstfile, open(ROOT+f"/config/{args.model_name}.ini",'w') as secondfile: 
         # read content from first file 
         for line in firstfile: 
-                # append content to second file 
-                secondfile.write(line)
+            # append content to second file (I do this to remember the configuration of each training)
+            secondfile.write(line)
 
     if args is None:
+        print(f"[train]:: Failed to parse config file!")
         sys.exit()
-
-    # Target Input Size
-    target_cnn_shape = (args.input_size, args.input_size, 3)
 
     # load images
     train_paths, train_labels = utils.read_mri_data_train(args)
-
-    # I have in purpose augmented and resized the images to 512x512x3
-    original_image_shape = (-1, -1, -1)
-    for image in train_paths:
-        original_image_shape = cv2.imread(image).shape
-        break
-    print(f"[train]:: image_shape: {original_image_shape}")
-    print(f"[train]:: target_cnn_shape: {target_cnn_shape}")
-
-    # utils.plot_data_distribution(train_labels)
-    # utils.plot_random_images(train_paths, train_labels)
 
     print("===========================================================")
     print(f"Total amount of train images: {len(train_paths)}")

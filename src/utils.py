@@ -3,7 +3,6 @@ import tensorflow as tf
 from tensorflow.keras.layers import Dense, Dropout, Flatten
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, AveragePooling2D, BatchNormalization, GlobalAveragePooling2D
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.optimizers import SGD
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.utils import to_categorical
 import argparse
@@ -15,7 +14,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from keras.models import load_model
 from tensorflow.keras import regularizers
-from tensorflow.keras.optimizers import Adam, Adamax
+from tensorflow.keras.optimizers import Adam, Adamax, SGD
 
 import pickle
 import os
@@ -96,6 +95,9 @@ def save_learning_curves(path, model_name, history, train):
         model_name (str): Unique name of the teacher
         history (dict): dictionary containing the training/validation
                         loss and accuracy after fitting the model
+        train: boolean declaring whether the history variable comes
+                directly from training or we load it from some npy file
+                in a post-training fashion.
     """
 
     if train:
@@ -168,7 +170,8 @@ def parse_opt():
     parser.add_argument("--model_type", type = str, default = config['model_type'], help = '')
     
     parser.add_argument("--test_batch_size", type = int, default = config['test_batch_size'], help = 'specify size of batches to split the testing data {16, 32, 64, 128...}')
-
+    parser.add_argument("--test_sample", type = str, default = config['test_sample'], help = '')
+    parser.add_argument("--test_label", type = str, default = config['test_label'], help = '')
     args = parser.parse_args()
     return args
 
@@ -209,6 +212,8 @@ def read_config(config_file):
 
         # Testing Section
         'test_batch_size': config.getint('Testing', 'test_batch_size'),
+        'test_sample': get_config('Testing', 'test_sample'),
+        'test_label': get_config('Testing', 'test_label'),
     }
 
     return config_values
@@ -369,6 +374,10 @@ def plot_train_test_balance(train_labels, test_labels):
     plt.close()
 
 def plot_random_images(X_train, Y_train):
+    """
+    Functions that plots 8 random images from the MRI dataset
+    just to get a basic grasp of what we are dealing with
+    """
     images = []
     for path in X_train[50:59]:
         image = load_img(path, target_size=(512, 512))
@@ -385,6 +394,14 @@ def plot_random_images(X_train, Y_train):
     plt.savefig("report/img/random_images.png")
 
 def plot_augmented_images(X_train):
+    """
+    Function that saves a plot with the original and the applied
+    augmentation to help the user understand how I have increased
+    the size of the MRI dataset taken from Kaggle
+
+    Args: 
+        X_train: the absolute paths of images for some particular class (e.g., glioma)
+    """
     images = []
     labels = []
     for path in X_train:
@@ -475,15 +492,22 @@ def barbplot_distribution_train_val_test(Y_train, Y_valid, Y_test):
     plt.savefig("report/img/distribution_train_valid_test.png")
     plt.close()
 
-def convert_to_dataframe(images, labels):
-    # Concatenate data paths with labels into one dataframe
-    images_df = pd.Series(images, name= 'images')
-    labels_df = pd.Series(labels, name='labels')
-    df = pd.concat([images_df, labels_df], axis= 1)
-    return df
-
 # Function to load and preprocess images from file paths
 def preprocess_images(file_paths, target_size):
+    """
+    This function loads and pre-process images. It basically resizes
+    them and normalizes their pixel values between 0-1 to ensure numerical
+    stability, faster convergence, better generalization and reduce
+    computational load.
+
+    Args:
+        file_paths: absolute path of all images
+        target_size: tuple in the form (int, int, int), e.g., (256, 256, 3)
+
+    Returns:
+        numpy array of images
+
+    """
     images = []
     for file_path in file_paths:
         # Load image using OpenCV (you can also use PIL)
@@ -538,11 +562,17 @@ def data_generator(file_paths, labels, batch_size, epochs, args):
             yield batch_images, labels_batch
 
 def get_compiled_model(args):
+    """
+    Function that based on the name of the model provided in the config file
+    ruturns a the associated compiled model based on some research I have conducted.
+    Feel free to modify the models or fine-tune their hyperparameters as you wish.
+    """
 
     input_shape = (args.input_size, args.input_size, 3)
 
     # Remember, when fine-tuning a pre-trained model, especially with a small dataset,
     # it's generally recommended to only unfreeze and retrain a few of the final layers to prevent overfitting.
+    # The more dataset you obtain (e.g., via data augmentation) the more layers you can unfreeze
 
     tf.keras.applications.xception.Xception
 

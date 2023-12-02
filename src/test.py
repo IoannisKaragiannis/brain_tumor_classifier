@@ -3,7 +3,6 @@ import sys
 import time
 import os
 from pathlib import Path
-import random
 
 FILE = Path(__file__).resolve()
 ROOT = str(FILE.parents[0].parents[0])  # object_detection root directory

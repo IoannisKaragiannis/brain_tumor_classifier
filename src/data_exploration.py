@@ -17,7 +17,6 @@ from tensorflow.keras.utils import to_categorical
 import os
 from pathlib import Path
 import sys
-import cv2
 import time
 
 import utils

@@ -68,7 +68,7 @@ Below one can observe that the distribution of the four different classes, namel
 ### Test a model
 
 ```terminal
-# test single image
+# test single image (modify the test_sample and test_label in the config.ini)
 (brain)$ python3 src/test_single_mri.py
 
 # test single image with GUI
@@ -257,6 +257,12 @@ model_type=VGG16
 [Testing]
 test_batch_size=16
 ```
+
+It is worth mentioning that throughout the training process, when splitting the training and validation data I maintained the proportion of classes in both the training and validation datasets (having the same class distribution) by using the `stratify` variable. This is what the `train` and `valid` data look like.
+
+<img src="report/img/VGG16_aug_train_valid_distribution.png" alt="image" style="zoom:72%;" />
+
+And this is the learning curves. For more information on how I perform the training please consult the `train` function of `Classifier` class in the `utils.py` script.
 
 <img src="report/img/VGG16_aug.png" alt="image" style="zoom:72%;" />
 
