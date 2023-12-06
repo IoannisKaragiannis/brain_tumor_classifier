@@ -8,7 +8,7 @@ from tensorflow.keras.utils import to_categorical
 import argparse
 import configparser
 from sklearn.utils import shuffle
-from tensorflow.keras.preprocessing.image import load_img, ImageDataGenerator
+from tensorflow.keras.preprocessing.image import load_img, ImageDataGenerator, img_to_array
 import cv2
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
@@ -443,6 +443,100 @@ def plot_augmented_images(X_train):
 
     plt.rcParams.update({'font.size': 12})
     plt.savefig("report/img/aumgented_images.png")
+    plt.close()
+
+def plot_augmented_images_with_histogram(X_train):
+    """
+    Function that saves a plot with the original and the applied
+    augmentation to help the user understand how I have increased
+    the size of the MRI dataset taken from Kaggle
+
+    Args: 
+        X_train: the absolute paths of images for some particular class (e.g., glioma)
+    """
+
+    def bring_to_front(images_list, labels_list, specific_label):
+        # Combine images and labels into tuples
+        combined = list(zip(images_list, labels_list))
+
+        # Sort the combined list based on labels
+        combined.sort(key=lambda x: specific_label not in x[1])
+
+        # Separate the sorted lists
+        sorted_images, sorted_labels = zip(*combined)
+        return list(sorted_images), list(sorted_labels)
+
+    images = []
+    labels = []
+    for path in X_train:
+        if "Tr-gl_0011" in path:
+
+            # Split the file path by '/'
+            parts = path.split('/')
+
+            # Get the filename
+            filename = parts[-1]
+
+            # Split the filename by '_'
+            filename_parts = filename.split('_')
+
+            # get technique
+            technique = filename_parts[2].split('.')[0]
+            if technique != "mirror" and technique != "updown":
+                labels.append("glioma_"+technique)
+
+                image = img_to_array(load_img(path, target_size=(256, 256)))
+                images.append(image)
+            
+    # Bring the original image and corresponding label to the front
+    images, labels = bring_to_front(images, labels, "original")
+
+    fig, axs = plt.subplots(4, 2, figsize=(14, 8))
+
+    # draw a red rectangle around the  original image to distringuish it
+    rect = plt.Rectangle((0, 0), 256, 256, edgecolor='red', linewidth=10, fill=False)
+    axs[0, 0].add_patch(rect)
+
+    # Loop through augmentations and plot images/histograms
+    for i, (image, label) in enumerate(zip(images, labels)):
+        
+        image = cv2.cvtColor(image.astype('uint8'), cv2.COLOR_RGB2BGR)
+        axs[i, 0].imshow(image)
+        # axs[i, 0].imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+        axs[i, 0].set_title(label)
+        axs[i, 0].axis('off')
+
+        hist = cv2.calcHist([image], [0], None, [256], [0, 256])
+        # Define the range for dark pixels (adjust as per your image)
+        dark_pixel_range = (0, 50)  # Change this range to identify the dark region
+
+        # Calculate the number of pixels falling in the dark region using the histogram
+        dark_pixels_count = np.sum(hist[dark_pixel_range[0]:dark_pixel_range[1]])
+
+        # Calculate the total number of pixels in the image
+        total_pixels = image.shape[0] * image.shape[1]
+
+        # Calculate the percentage of dark pixels
+        percentage_dark_pixels = (dark_pixels_count / total_pixels) * 100
+
+        # Find the x-position to place the percentage text
+        text_x_pos = dark_pixel_range[1] - (dark_pixel_range[1] - dark_pixel_range[0]) * 0.8
+        # Find the y-position to place the percentage text
+        text_y_pos = max(hist) * 0.7
+
+        # Display the percentage of dark pixels within the dark region
+        axs[i, 1].text(text_x_pos, text_y_pos, f"{percentage_dark_pixels:.2f}%", color='black', fontsize=10)
+
+        # Highlighting the dark region (adjust as per your image)
+        axs[i, 1].axvspan(0, 50, color='black', alpha=0.15)  # Adjust the range to highlight darker pixels
+        axs[i, 1].plot(hist, color='blue')
+        # axs[i, 1].set_title(label)
+        axs[i, 1].set_ylabel('Frequency')
+        axs[i, 1].grid(True)
+    axs[i, 1].set_xlabel('Gray Level')
+
+    plt.rcParams.update({'font.size': 12})
+    plt.savefig("report/img/aumgented_images_with_hist.png")
     plt.close()
 
 def barbplot_distribution_train_val_test(Y_train, Y_valid, Y_test):

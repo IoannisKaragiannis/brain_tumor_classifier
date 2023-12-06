@@ -64,6 +64,17 @@ Below one can observe that the distribution of the four different classes, namel
 
 <img src="report/img/aumgented_images.png" alt="image" style="zoom:72%;" />
 
+The three augmentation techniques directly affecting the histogram of the original image are shown below.
+
+<img src="report/img/aumgented_images_with_hist.png" alt="image" style="zoom:72%;" />
+
+In the context of MRI images, the predominant composition comprises low-intensity pixels, shaping a left-skewed histogram. To compare these histograms, I've highlighted the dark regions, particularly those below an intensity of 50. Observations on contrast adjustments reveal a reduction in dark region pixel percentage from 66.73% to 58.86% with increased contrast and vice versa with decreased contrast.
+
+Contrast adjustments influence pixel distribution within the dark region, yet gaussian blurring exhibits minimal impact on the percentage of dark pixels. However, it does alter the distribution pattern within this darker range.
+
+In an effort to eliminate the dark background I tried to crop the image. However, I ended up losing vital brain structures. Retaining the dark background, inherent in all MRI images, appears judicious, allowing the classifier to discern its insignificance.
+
+My experience underscores the necessity of comprehending the impact of data augmentation on MRI images. Verifying whether the augmented version remains representative of the original image is crucial. Seeking input from medical experts stands as an indispensable step in this process.
 
 ### Test a model
 

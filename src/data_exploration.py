@@ -44,6 +44,7 @@ def main():
 
     if args.augmentation:
         utils.plot_augmented_images(train_paths)
+        utils.plot_augmented_images_with_histogram(train_paths)
 
     utils.plot_data_distribution(train_labels)
     utils.plot_random_images(train_paths, train_labels)
