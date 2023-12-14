@@ -311,4 +311,4 @@ VGG16 with the particular data augmentation seems to be promising even when we a
 (brain)$ python3 src/diagnose_with_gui.py
 ```
 
-<img src="report/videos/gui_demo.gif" width="720" height="480" />
+<img src="report/videos/gui_demo.gif" width="1280" height="720" />
