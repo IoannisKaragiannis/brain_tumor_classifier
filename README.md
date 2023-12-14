@@ -311,13 +311,4 @@ VGG16 with the particular data augmentation seems to be promising even when we a
 (brain)$ python3 src/diagnose_with_gui.py
 ```
 
-
-<video width="640" height="360" controls>
-  <source src="report/videos/gui_demo.webm" type="video/webm">
-  Your browser does not support the video tag.
-</video>
-
-
-
-
-[![Watch the video](report/img/gui_demo.png)](report/videos/gui_demo.webm)
+<img src="report/videos/gui_demo.gif" width="720" height="480" />
